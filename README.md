@@ -1,5 +1,5 @@
 ﻿# MatrixMultiplication
-Implementation of the maximum subarray problem algorithm presented in the MIT "Introduction to Algorithms" course. This is more or less a test bed for the exercises and pseudocode in the book.
+Implementation of the matrix multiplication algorithms presented in the MIT "Introduction to Algorithms" course. This is more or less a test bed for the exercises and pseudocode in the book.
 
 ## Example
 
