@@ -1,0 +1,10 @@
+{
+  "name": "MatrixMultiplication",
+  "version": "0.0.0",
+  "description": "MatrixMultiplication",
+  "main": "app.js",
+  "author": {
+    "name": "ajones",
+    "email": ""
+  }
+}
