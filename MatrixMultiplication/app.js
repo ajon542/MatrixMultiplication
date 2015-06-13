@@ -1,5 +1,6 @@
 ﻿
 function CreateMatrix(rows) {
+
     var arr = [];
     
     for (var i = 0; i < rows; i++) {
@@ -12,8 +13,8 @@ function CreateMatrix(rows) {
 function SquareMatrixMultiply(a, b) {
     
     var matrixSize = a[0].length;
-    //var c = CreateMatrix(matrixSize);
-    var c = [[0, 0], [0, 0]];
+    var c = CreateMatrix(matrixSize);
+
     for (var i = 0; i < matrixSize; ++i) {
         for (var j = 0; j < matrixSize; ++j) {
             c[i][j] = 0;
@@ -26,7 +27,7 @@ function SquareMatrixMultiply(a, b) {
     return c;
 }
 
-var a = [[1, 2], [3, 4]];
-var b = [[1, 2], [3, 4]];
+var a = [[1, -2, 3], [3, -4, 5], [5, -6, 7]];
+var b = [[-1, 2, 3], [3, 4, 5], [5, 6, -7]];
 var c = SquareMatrixMultiply(a, b);
 console.log(c);
