@@ -165,67 +165,56 @@ function SquareMatrixMultiply_Strassen(a, b) {
     return c;
 }
 
-// I grabbed this version of a recursive matrix multiply from:
-// http://www.c4learn.com/c-programs/c-program-to-multiply-two-matrices-using-recursion.html
-// I am a little weary about it's implementation since it appears to access
-// indices outside the bounds of the original matrix without the check "if (i < row1 && j < col2)".
-// It works in the C implementation because they are multiplying 2x2 matrices
-// and providing a 10x10 array.
-var sum = 0;
 var i = 0;
 var j = 0;
 var k = 0;
+var sum = 0;
 var res = CreateMatrix(3);
-
-function matrixMultiply(a, b) {
+function MatrixMultiply_Recursive(a, b) {
     
-    // i < number of rows in first matrix
+    // first matrix rows
     if (i < a.length) {
-        // j < number of columns in second matrix
+        // second matrix cols
         if (j < b[0].length) {
+            // sum for the length of the row of the first matrix
             if (k < a[0].length) {
                 sum += a[i][k] * b[k][j];
                 k++;
-                matrixMultiply(a, b);
+                MatrixMultiply_Recursive(a, b);
             }
             
-            // This extra check is needed because after exiting
-            // the recursive matrixMultiply method above, i > a.length
-            // and we have an out of bounds index on this array.
-            // i < number of rows in first matrix
-            // j < number of columns in second matrix
             if (i < a.length && j < b[0].length) {
                 res[i][j] = sum;
             }
             
-            sum = 0;
-            k = 0;
             j++;
-            matrixMultiply(a, b);
+            k = 0;
+            sum = 0;
+            MatrixMultiply_Recursive(a, b);
         }
-        j = 0;
+        
         i++;
-        matrixMultiply(a, b);
+        j = 0;
+        k = 0;
+        MatrixMultiply_Recursive(a, b);
     }
 }
+
+var a = [[1, 2, 3], [4, 5, 6]];
+var b = [[7, 8], [9, 10], [11, 12]];
+
+MatrixMultiply_Recursive(a, b);
+console.log(res);
 
 
 //var a = [[1, 2, 3, 4], [5, 6, 7, 8], [-10, -2, -4, -60], [-1, -2, -3, -4]];
 //var b = [[1, 2, 3, 4], [5, 6, 7, 8], [-10, -2, -4, -60], [-1, -2, -3, -4]];
 
-var a = [[1, 2, 3], [4, 5, 6]];
-var b = [[7, 8], [9, 10], [11, 12]];
-
-console.log(a.length);
-console.log(a[0].length);
-
 //var c = SquareMatrixMultiply(a, b);
 //var d = SquareMatrixMultiply_Recursive(a, b);
 //var e = SquareMatrixMultiply_Strassen(a, b);
-matrixMultiply(a, b);
 
 //console.log(c);
 //console.log(d);
 //console.log(e);
-console.log(res);
 
