@@ -63,21 +63,50 @@ function MatrixSubtraction(a, b) {
     return c;
 }
 
-function SquareMatrixMultiply(a, b) {
+function MatrixMultiply_Iterative(a, b) {
     
-    var n = a[0].length;
-    var c = CreateMatrix(n);
+    var c = CreateMatrix(a[0].length);
     
-    for (var i = 0; i < n; ++i) {
-        for (var j = 0; j < n; ++j) {
+    for (var i = 0; i < a.length; ++i) {
+        for (var j = 0; j < b[0].length; ++j) {
             c[i][j] = 0;
-            for (var k = 0; k < n; ++k) {
+            for (var k = 0; k < a[0].length; ++k) {
                 c[i][j] += a[i][k] * b[k][j];
             }
         }
     }
     
     return c;
+}
+
+function MatrixMultiply_Recursive(a, b) {
+    
+    // first matrix rows
+    if (i < a.length) {
+        // second matrix cols
+        if (j < b[0].length) {
+            // sum for the length of the row of the first matrix
+            if (k < a[0].length) {
+                sum += a[i][k] * b[k][j];
+                k++;
+                MatrixMultiply_Recursive(a, b);
+            }
+            
+            if (i < a.length && j < b[0].length) {
+                res[i][j] = sum;
+            }
+            
+            j++;
+            k = 0;
+            sum = 0;
+            MatrixMultiply_Recursive(a, b);
+        }
+        
+        i++;
+        j = 0;
+        k = 0;
+        MatrixMultiply_Recursive(a, b);
+    }
 }
 
 function SquareMatrixMultiply_Recursive(a, b) {
@@ -165,46 +194,16 @@ function SquareMatrixMultiply_Strassen(a, b) {
     return c;
 }
 
+var a = [[1, 2, 3], [4, 5, 6]];
+var b = [[7, 8], [9, 10], [11, 12]];
 var i = 0;
 var j = 0;
 var k = 0;
 var sum = 0;
 var res = CreateMatrix(3);
-function MatrixMultiply_Recursive(a, b) {
-    
-    // first matrix rows
-    if (i < a.length) {
-        // second matrix cols
-        if (j < b[0].length) {
-            // sum for the length of the row of the first matrix
-            if (k < a[0].length) {
-                sum += a[i][k] * b[k][j];
-                k++;
-                MatrixMultiply_Recursive(a, b);
-            }
-            
-            if (i < a.length && j < b[0].length) {
-                res[i][j] = sum;
-            }
-            
-            j++;
-            k = 0;
-            sum = 0;
-            MatrixMultiply_Recursive(a, b);
-        }
-        
-        i++;
-        j = 0;
-        k = 0;
-        MatrixMultiply_Recursive(a, b);
-    }
-}
-
-var a = [[1, 2, 3], [4, 5, 6]];
-var b = [[7, 8], [9, 10], [11, 12]];
-
 MatrixMultiply_Recursive(a, b);
 console.log(res);
+console.log(MatrixMultiply_Iterative(a, b));
 
 
 //var a = [[1, 2, 3, 4], [5, 6, 7, 8], [-10, -2, -4, -60], [-1, -2, -3, -4]];
