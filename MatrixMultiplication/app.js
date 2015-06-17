@@ -1,6 +1,6 @@
 ﻿
 function CreateMatrix(rows) {
-
+    
     var arr = [];
     
     for (var i = 0; i < rows; i++) {
@@ -19,7 +19,7 @@ function GetMatrixData(source, size, colOffset, rowOffset) {
             dest[i][j] = source[i + rowOffset][j + colOffset];
         }
     }
-
+    
     return dest;
 }
 
@@ -35,7 +35,7 @@ function SetMatrixData(source, dest, size, colOffset, rowOffset) {
 }
 
 function MatrixAddition(a, b) {
-
+    
     var n = a[0].length;
     var c = CreateMatrix(n);
     
@@ -44,7 +44,7 @@ function MatrixAddition(a, b) {
             c[i][j] = a[i][j] + b[i][j];
         }
     }
-
+    
     return c;
 }
 
@@ -66,7 +66,7 @@ function SquareMatrixMultiply(a, b) {
     
     var n = a[0].length;
     var c = CreateMatrix(n);
-
+    
     for (var i = 0; i < n; ++i) {
         for (var j = 0; j < n; ++j) {
             c[i][j] = 0;
@@ -75,45 +75,12 @@ function SquareMatrixMultiply(a, b) {
             }
         }
     }
-
+    
     return c;
 }
 
 function SquareMatrixMultiply_Recursive(a, b) {
-
-    var n = a[0].length;
-    var c = CreateMatrix(n);
-
-    if (n == 1) {
-        c[0][0] = a[0][0] * b[0][0];
-    } else {
-
-        var a11 = GetMatrixData(a, n / 2, 0, 0);
-        var a12 = GetMatrixData(a, n / 2, n / 2, 0);
-        var a21 = GetMatrixData(a, n / 2, 0, n / 2);
-        var a22 = GetMatrixData(a, n / 2, n / 2, n / 2);
-        
-        var b11 = GetMatrixData(b, n / 2, 0, 0);
-        var b12 = GetMatrixData(b, n / 2, n / 2, 0);
-        var b21 = GetMatrixData(b, n / 2, 0, n / 2);
-        var b22 = GetMatrixData(b, n / 2, n / 2, n / 2);
-
-        var c11 = MatrixAddition(SquareMatrixMultiply_Recursive(a11, b11), SquareMatrixMultiply_Recursive(a12, b21));
-        var c12 = MatrixAddition(SquareMatrixMultiply_Recursive(a11, b12), SquareMatrixMultiply_Recursive(a12, b22));
-        var c21 = MatrixAddition(SquareMatrixMultiply_Recursive(a21, b11), SquareMatrixMultiply_Recursive(a22, b21));
-        var c22 = MatrixAddition(SquareMatrixMultiply_Recursive(a21, b12), SquareMatrixMultiply_Recursive(a22, b22));
-
-        SetMatrixData(c11, c, c11[0].length, 0, 0);
-        SetMatrixData(c12, c, c11[0].length, n / 2, 0);
-        SetMatrixData(c21, c, c11[0].length, 0, n / 2);
-        SetMatrixData(c22, c, c11[0].length, n / 2, n / 2);
-    }
-
-    return c;
-}
-
-function SquareMatrixMultiply_Strassen(a, b) {
-
+    
     var n = a[0].length;
     var c = CreateMatrix(n);
     
@@ -130,7 +97,40 @@ function SquareMatrixMultiply_Strassen(a, b) {
         var b12 = GetMatrixData(b, n / 2, n / 2, 0);
         var b21 = GetMatrixData(b, n / 2, 0, n / 2);
         var b22 = GetMatrixData(b, n / 2, n / 2, n / 2);
+        
+        var c11 = MatrixAddition(SquareMatrixMultiply_Recursive(a11, b11), SquareMatrixMultiply_Recursive(a12, b21));
+        var c12 = MatrixAddition(SquareMatrixMultiply_Recursive(a11, b12), SquareMatrixMultiply_Recursive(a12, b22));
+        var c21 = MatrixAddition(SquareMatrixMultiply_Recursive(a21, b11), SquareMatrixMultiply_Recursive(a22, b21));
+        var c22 = MatrixAddition(SquareMatrixMultiply_Recursive(a21, b12), SquareMatrixMultiply_Recursive(a22, b22));
+        
+        SetMatrixData(c11, c, c11[0].length, 0, 0);
+        SetMatrixData(c12, c, c11[0].length, n / 2, 0);
+        SetMatrixData(c21, c, c11[0].length, 0, n / 2);
+        SetMatrixData(c22, c, c11[0].length, n / 2, n / 2);
+    }
+    
+    return c;
+}
 
+function SquareMatrixMultiply_Strassen(a, b) {
+    
+    var n = a[0].length;
+    var c = CreateMatrix(n);
+    
+    if (n == 1) {
+        c[0][0] = a[0][0] * b[0][0];
+    } else {
+        
+        var a11 = GetMatrixData(a, n / 2, 0, 0);
+        var a12 = GetMatrixData(a, n / 2, n / 2, 0);
+        var a21 = GetMatrixData(a, n / 2, 0, n / 2);
+        var a22 = GetMatrixData(a, n / 2, n / 2, n / 2);
+        
+        var b11 = GetMatrixData(b, n / 2, 0, 0);
+        var b12 = GetMatrixData(b, n / 2, n / 2, 0);
+        var b21 = GetMatrixData(b, n / 2, 0, n / 2);
+        var b22 = GetMatrixData(b, n / 2, n / 2, n / 2);
+        
         var s1 = MatrixSubtraction(b12, b22);
         var s2 = MatrixAddition(a11, a12);
         var s3 = MatrixAddition(a21, a22);
@@ -141,7 +141,7 @@ function SquareMatrixMultiply_Strassen(a, b) {
         var s8 = MatrixAddition(b21, b22);
         var s9 = MatrixSubtraction(a11, a21);
         var s10 = MatrixAddition(b11, b12);
-
+        
         var p1 = SquareMatrixMultiply_Strassen(a11, s1);
         var p2 = SquareMatrixMultiply_Strassen(s2, b22);
         var p3 = SquareMatrixMultiply_Strassen(s3, b11);
@@ -149,7 +149,7 @@ function SquareMatrixMultiply_Strassen(a, b) {
         var p5 = SquareMatrixMultiply_Strassen(s5, s6);
         var p6 = SquareMatrixMultiply_Strassen(s7, s8);
         var p7 = SquareMatrixMultiply_Strassen(s9, s10);
-
+        
         var c11 = MatrixAddition(MatrixSubtraction(MatrixAddition(p5, p4), p2), p6);
         var c12 = MatrixAddition(p1, p2);
         var c21 = MatrixAddition(p3, p4);
@@ -164,13 +164,67 @@ function SquareMatrixMultiply_Strassen(a, b) {
     return c;
 }
 
-var a = [[1, 2, 3, 4], [5, 6, 7, 8], [-10, -2, -4, -60], [-1, -2, -3, -4]];
-var b = [[1, 2, 3, 4], [5, 6, 7, 8], [-10, -2, -4, -60], [-1, -2, -3, -4]];
-var c = SquareMatrixMultiply(a, b);
-var d = SquareMatrixMultiply_Recursive(a, b);
-var e = SquareMatrixMultiply_Strassen(a, b);
+// I grabbed this version of a recursive matrix multiply from:
+// http://www.c4learn.com/c-programs/c-program-to-multiply-two-matrices-using-recursion.html
+// I am a little weary about it's implementation since it appears to access
+// indices outside the bounds of the original matrix without the check "if (i < row1 && j < col2)".
+// It works in the C implementation because they are multiplying 2x2 matrices
+// and providing a 10x10 array.
+var sum = 0;
+var i = 0;
+var j = 0;
+var k = 0;
+var res = CreateMatrix(3);
 
-console.log(c);
-console.log(d);
-console.log(e);
+function matrixMultiply(a, b) {
+    
+    // i < number of rows in first matrix
+    if (i < a.length) {
+        // j < number of columns in second matrix
+        if (j < b[0].length) {
+            if (k < a[0].length) {
+                sum += a[i][k] * b[k][j];
+                k++;
+                matrixMultiply(a, b);
+            }
+            
+            // This extra check is needed because after exiting
+            // the recursive matrixMultiply method above, i > a.length
+            // and we have an out of bounds index on this array.
+            // i < number of rows in first matrix
+            // j < number of columns in second matrix
+            if (i < a.length && j < b[0].length) {
+                res[i][j] = sum;
+            }
+            
+            sum = 0;
+            k = 0;
+            j++;
+            matrixMultiply(a, b);
+        }
+        j = 0;
+        i++;
+        matrixMultiply(a, b);
+    }
+}
+
+
+//var a = [[1, 2, 3, 4], [5, 6, 7, 8], [-10, -2, -4, -60], [-1, -2, -3, -4]];
+//var b = [[1, 2, 3, 4], [5, 6, 7, 8], [-10, -2, -4, -60], [-1, -2, -3, -4]];
+
+var a = [[1, 2, 3], [4, 5, 6]];
+var b = [[7, 8], [9, 10], [11, 12]];
+
+console.log(a.length);
+console.log(a[0].length);
+
+//var c = SquareMatrixMultiply(a, b);
+//var d = SquareMatrixMultiply_Recursive(a, b);
+//var e = SquareMatrixMultiply_Strassen(a, b);
+matrixMultiply(a, b);
+
+//console.log(c);
+//console.log(d);
+//console.log(e);
+console.log(res);
 
